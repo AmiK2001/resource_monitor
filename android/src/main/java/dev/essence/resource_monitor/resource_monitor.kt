@@ -10,6 +10,14 @@ import io.flutter.plugin.common.MessageCodec
 import io.flutter.plugin.common.StandardMessageCodec
 import java.io.ByteArrayOutputStream
 import java.nio.ByteBuffer
+import androidx.annotation.NonNull
+import io.flutter.embedding.android.FlutterActivity
+import io.flutter.embedding.engine.FlutterEngine
+import io.flutter.plugin.common.MethodChannel
+import sun.security.util.Debug
+
+
+
 
 private fun wrapResult(result: Any?): List<Any?> {
   return listOf(result)
@@ -138,5 +146,36 @@ interface ResourceMonitorApi {
         }
       }
     }
+  }
+}
+
+class ResourceMonitorPlugin : FlutterPlugin, ResourceMonitorApi {
+  override fun getPlatformVersion(result: Result<String>?) {
+    result?.success("Android ${android.os.Build.VERSION.RELEASE}")
+  }
+
+  override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+    ResourceMonitorApi.setup(flutterPluginBinding.binaryMessenger, this)
+  }
+
+  override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
+    ResourceMonitorApi.setup(binding.binaryMessenger, null)
+  }
+
+  override fun getResourceUsage(callback: (Result<ResourseUsageInfo>) -> Unit) {
+    TODO("Not yet implemented")
+  }
+
+  private fun getCpuUsageByApp() {
+  }
+
+  private fun getMemoryUsageByApp() {
+    val memInfo: Debug.MemoryInfo = MemoryInfo()
+    Debug.getMemoryInfo(memInfo)
+    var res: Long = memInfo.getTotalPrivateDirty()
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) res += memInfo.getTotalPrivateClean()
+
+    return res * 1024L
   }
 }
