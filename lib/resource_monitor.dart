@@ -13,6 +13,10 @@ class ResourceMonitor extends IResourceMonitor {
     return _instance.getResourceUsage();
   }
 
+  Future<String?> getPlatformVersion() async {
+    return _instance.getPlatformVersion();
+  }
+
   @override
   Stream<ResourseUsageInfo> getResourceUsageStream({
     Duration pollingRate = const Duration(seconds: 1),

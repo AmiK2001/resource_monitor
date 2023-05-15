@@ -7,5 +7,5 @@ public class ResourceMonitorPlugin: NSObject, FlutterPlugin, ResourceMonitorApi 
 
     func getPlatformVersion(completion: @escaping (String?) -> Void) {
         completion("iOS " + UIDevice.current.systemVersion)
-    }
+    }   
 }
